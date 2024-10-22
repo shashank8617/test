@@ -1,22 +1,20 @@
 pipeline {
     agent any
     environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id') // Ensure this matches your credentials ID
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Ensure this matches your credentials ID
     }
     stages {
         stage('Checkout Code') {
             steps {
                 script {
-                    // Checkout your Git repository
-                    git 'https://github.com/shashank8617/test.git'
+                    git 'https://github.com/shashank8617/test.git' // Assuming this is public or GitHub token added
                 }
             }
         }
         stage('Terraform Init') {
             steps {
                 script {
-                    // Run Terraform Init
                     sh 'terraform init'
                 }
             }
@@ -24,7 +22,6 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    // Run Terraform Plan
                     sh 'terraform plan'
                 }
             }
@@ -32,7 +29,6 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Run Terraform Apply
                     sh 'terraform apply -auto-approve'
                 }
             }
@@ -40,12 +36,7 @@ pipeline {
     }
     post {
         always {
-            // Move cleanWs() inside a node block
-            script {
-                node {
-                    cleanWs()
-                }
-            }
+            cleanWs() // Clean workspace after the job
         }
     }
 }
