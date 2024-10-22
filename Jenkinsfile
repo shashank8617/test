@@ -1,63 +1,45 @@
 pipeline {
     agent any
-
     environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')  // Reference the Access Key ID
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')  // Reference the Secret Access Key
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
     }
-
     stages {
         stage('Checkout Code') {
             steps {
-                // Check out the Terraform code from the Git repository
-                git branch: 'main', url: 'https://github.com/shashank8617/test.git'
+                // Checkout your Git repository
+                git 'https://github.com/shashank8617/test.git'
             }
         }
-
         stage('Terraform Init') {
             steps {
+                // Run Terraform Init
                 script {
-                    // Initialize Terraform and set up backend configuration
-                    sh '''
-                        terraform init \
-                        -backend-config="bucket=my-terraform-state-bucket" \
-                        -backend-config="key=terraform.tfstate" \
-                        -backend-config="region=ap-south-1" \
-                        -backend-config="dynamodb_table=terraform-locks"
-                    '''
+                    sh 'terraform init'
                 }
             }
         }
-
         stage('Terraform Plan') {
             steps {
+                // Run Terraform Plan
                 script {
-                    // Generate a Terraform execution plan
-                    sh 'terraform plan -out=tfplan'
+                    sh 'terraform plan'
                 }
             }
         }
-
         stage('Terraform Apply') {
             steps {
+                // Run Terraform Apply
                 script {
-                    // Apply the Terraform plan to provision resources
-                    sh 'terraform apply -auto-approve tfplan'
+                    sh 'terraform apply -auto-approve'
                 }
             }
         }
     }
-
     post {
         always {
-            // Clean up workspace after execution
+            // Clean workspace after build
             cleanWs()
-        }
-        success {
-            echo 'Terraform execution completed successfully!'
-        }
-        failure {
-            echo 'Terraform execution failed.'
         }
     }
 }
