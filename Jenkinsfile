@@ -40,9 +40,11 @@ pipeline {
     }
     post {
         always {
+            // Move cleanWs() inside a node block
             script {
-                // Clean workspace after build
-                cleanWs()
+                node {
+                    cleanWs()
+                }
             }
         }
     }
