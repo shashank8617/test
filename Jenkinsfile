@@ -7,30 +7,32 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // Checkout your Git repository
-                git 'https://github.com/shashank8617/test.git'
+                script {
+                    // Checkout your Git repository
+                    git 'https://github.com/shashank8617/test.git'
+                }
             }
         }
         stage('Terraform Init') {
             steps {
-                // Run Terraform Init
                 script {
+                    // Run Terraform Init
                     sh 'terraform init'
                 }
             }
         }
         stage('Terraform Plan') {
             steps {
-                // Run Terraform Plan
                 script {
+                    // Run Terraform Plan
                     sh 'terraform plan'
                 }
             }
         }
         stage('Terraform Apply') {
             steps {
-                // Run Terraform Apply
                 script {
+                    // Run Terraform Apply
                     sh 'terraform apply -auto-approve'
                 }
             }
@@ -38,8 +40,10 @@ pipeline {
     }
     post {
         always {
-            // Clean workspace after build
-            cleanWs()
+            script {
+                // Clean workspace after build
+                cleanWs()
+            }
         }
     }
 }
